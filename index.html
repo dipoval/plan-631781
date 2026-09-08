@@ -242,10 +242,30 @@
   details.tech[open] summary::before{content:"Ocultar técnica ▴";}
   details.tech .exlib-cues{margin-top:8px;}
 
+  /* Nivel: control en la tarjeta de Hoy + acordeón de las 4 variantes.
+     Spec 2026-09-07 §5. */
+  .wk-controls{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .nivel-select{
+    font:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--surface);
+    border:1px solid var(--line-2); border-radius:8px; padding:6px 10px; cursor:pointer;
+  }
+  .nivel-select:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  details.niveles{margin-top:10px;}
+  details.niveles summary{font-size:12px; font-weight:650; color:var(--accent); cursor:pointer; list-style:none;}
+  details.niveles summary::-webkit-details-marker{display:none;}
+  details.niveles summary::before{content:"Los 4 niveles de este ejercicio ▾";}
+  details.niveles[open] summary::before{content:"Ocultar niveles ▴";}
+  .niveles-list{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
+  .niveles-list .nv-row{display:flex; gap:8px; font-size:12.5px; color:var(--ink-2);}
+  .niveles-list .nv-row.is-current{color:var(--accent); font-weight:650;}
+  .niveles-list .nv-dot{width:16px; flex:none; text-align:center;}
+  .rm-group-title{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-3); margin:16px 0 4px;}
+  .rm-group:first-child .rm-group-title{margin-top:0;}
+
   .rm-nudge{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--surface-2); border-radius:var(--radius-s); padding:9px 11px; font-size:12.5px; color:var(--ink-2);}
   .rm-nudge button{background:var(--accent); color:var(--accent-ink); border:none; border-radius:999px; padding:6px 12px; font-size:11.5px; font-weight:650; cursor:pointer;}
 
-  /* ================= Mi 1RM tab ================= */
+  /* ================= Mi progreso tab ================= */
   .rm-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-top:.6pt solid var(--line);}
   .rm-row:first-child{border-top:none;}
   .rm-row .rm-name{font-weight:600; font-size:13.8px;}
@@ -309,12 +329,12 @@
     </div>
   </section>
 
-  <!-- ============ TAB: MI 1RM ============ -->
+  <!-- ============ TAB: MI PROGRESO ============ -->
   <section class="tab-panel" data-tab="rm" id="panel-rm">
     <div class="wrap-narrow">
       <div class="hoy-head">
-        <h2>Tu 1RM</h2>
-        <p class="desc">Solo los cuatro ejercicios de aislamiento del jueves usan porcentaje de 1RM: curl, patada de tríceps, encogimiento de hombros y curl de muñeca. Ingresa tu máximo estimado de cada uno y el plan calcula el peso de cada serie — se guarda en este navegador. El resto de los ejercicios progresa cambiando de variante, no por porcentaje.</p>
+        <h2>Mi progreso</h2>
+        <p class="desc">Solo los cuatro ejercicios de aislamiento del jueves usan porcentaje de 1RM: curl, patada de tríceps, encogimiento de hombros y curl de muñeca. Ingresa tu máximo estimado de cada uno y el plan calcula el peso de cada serie — se guarda en este navegador. El resto progresa por nivel de variante: marca en qué nivel estás acá abajo o directamente en la tarjeta del ejercicio en «Hoy» — los dos guardan el mismo valor.</p>
       </div>
 
       <div class="card panel" style="margin-top:14px;">
@@ -341,7 +361,7 @@
         <div id="rmList"></div>
       </div>
 
-      <p style="margin-top:10px; font-size:12px; color:var(--ink-2);">Con mancuernas de 5, 10 y 12 kg, estimar el 1RM de un curl o un curl de muñeca es realista. Para estos cuatro, calienta y busca un peso con el que hagas 3 a 5 repeticiones limpias — si con 12 kg todavía te sobran muchas repeticiones, anótalo y avísale al relator: significa que ese ejercicio ya pide más carga de la que tienes en casa.</p>
+      <p style="margin-top:10px; font-size:12px; color:var(--ink-2);">Con mancuernas de 5, 10 y 12 kg, estimar el 1RM de un curl o un curl de muñeca es realista. Para estos cuatro, calienta y busca un peso con el que hagas 3 a 5 repeticiones limpias — si con 12 kg todavía te sobran muchas repeticiones, anótalo y avísale al relator: significa que ese ejercicio ya pide más carga de la que tienes en casa. Los demás ejercicios no tienen esta tarjeta de estimación: se progresa directamente cambiando de nivel cuando la técnica y las repeticiones ya sobran.</p>
     </div>
   </section>
 
@@ -372,7 +392,7 @@
                 </tbody>
               </table>
             </div>
-            <p style="margin-top:10px; font-size:12px; color:var(--ink-2);">Descanso entre series: <strong>90 seg–2 min</strong>. Estos ejercicios no aparecen en «Mi 1RM» porque no se calculan por porcentaje.</p>
+            <p style="margin-top:10px; font-size:12px; color:var(--ink-2);">Descanso entre series: <strong>90 seg–2 min</strong>. Estos ejercicios no aparecen en «Mi progreso» como fila de kilos porque no se calculan por porcentaje — progresan por nivel, en la sección de abajo de esa misma pestaña.</p>
           </div>
 
           <div class="card panel">
@@ -397,7 +417,7 @@
 
         <div class="callout callout-accent" style="margin-top:16px;">
           <h4>Regla de progresión (autorregulada)</h4>
-          <p>En la última serie de cada ejercicio, evalúa cuántas repeticiones te quedaron en reserva antes del fallo (RIR). Si terminas con <strong>RIR ≥ 2</strong> en dos sesiones seguidas: en los patrones grandes, pasa a la variante o al peso de la fila siguiente de ese ejercicio; en los cuatro de aislamiento, sube su 1RM de referencia un <strong>+2.5%</strong> en la pestaña «Mi 1RM». Si no completas las repeticiones con buena técnica, retrocede un escalón — no es un retroceso del plan, es cómo funciona.</p>
+          <p>En la última serie de cada ejercicio, evalúa cuántas repeticiones te quedaron en reserva antes del fallo (RIR). Si terminas con <strong>RIR ≥ 2</strong> en dos sesiones seguidas: en los patrones grandes, pasa a la variante o al peso de la fila siguiente de ese ejercicio; en los cuatro de aislamiento, sube su 1RM de referencia un <strong>+2.5%</strong> en la pestaña «Mi progreso». Si no completas las repeticiones con buena técnica, retrocede un escalón — no es un retroceso del plan, es cómo funciona.</p>
         </div>
 
         <div class="callout callout-accent" style="margin-top:12px;">
@@ -537,7 +557,7 @@
       <div class="section-head">
         <div class="section-kicker">Referencia técnica</div>
         <h2>Biblioteca de ejercicios</h2>
-        <p class="desc">Los 18 ejercicios del programa, con las señales técnicas clave. Usa MuscleWiki como base de datos visual: busca el nombre en inglés indicado para ver la ejecución en imagen y video.</p>
+        <p class="desc">Los 18 ejercicios del programa, con las señales técnicas clave. Cada tarjeta tiene su botón «Ver video» para revisar la ejecución.</p>
       </div>
       <div class="exlib-grid" id="exLibraryGrid"></div>
     </div>
@@ -552,7 +572,7 @@
   </button>
   <button data-tab-btn="rm" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>
-    <span>Mi 1RM</span><span class="ind"></span>
+    <span>Mi progreso</span><span class="ind"></span>
   </button>
   <button data-tab-btn="plan" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
@@ -608,39 +628,39 @@
   var EXERCISES = {
     squat:    { name:"Sentadilla sosteniendo una mancuerna", en:"Goblet Squat", patron:"Rodilla (bilateral)", musculos:"Cuádriceps, glúteo, core", icon:"squat", loaded:false,
       cues:["Mancuerna sujeta con las dos manos contra el pecho, codos abajo — no la subas a la altura del hombro","Pies al ancho de los hombros, baja como si te sentaras en una silla","Rodillas apuntando en la misma dirección que los pies","Baja hasta donde controles la espalda neutra, no más"],
-      bw:{1:{sets:3,detail:"12–15 reps solo con tu peso, bajada de 3 seg"}, 2:{sets:3,detail:"10–12 reps sosteniendo la mancuerna de 10 kg"}, 3:{sets:4,detail:"8–10 reps con 12 kg, pausa de 2 seg abajo"}, 4:{sets:4,detail:"8 reps con 12 kg, bajada de 4 seg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Solo con tu peso",dosis:"12–15 reps, bajada de 3 seg"}, 2:{sets:3,variante:"Sosteniendo la mancuerna de 10 kg",dosis:"10–12 reps"}, 3:{sets:4,variante:"Con 12 kg",dosis:"8–10 reps, pausa de 2 seg abajo"}, 4:{sets:4,variante:"Con 12 kg",dosis:"8 reps, bajada de 4 seg"}} },
     rdl:      { name:"Peso muerto rumano a una pierna", en:"Single-Leg Romanian Deadlift", patron:"Bisagra de cadera", musculos:"Isquiotibiales, glúteo, lumbar", icon:"hinge", loaded:false,
       cues:["Mancuerna en la mano contraria a la pierna de apoyo","Bisagra desde la cadera con la espalda neutra, la pierna libre se estira hacia atrás","Rodilla de apoyo con flexión mínima y fija","Si pierdes el equilibrio, apoya la punta del pie libre o una mano en la pared"],
-      bw:{1:{sets:3,detail:"10 reps por pierna sin peso, foco en el equilibrio"}, 2:{sets:3,detail:"8–10 reps por pierna con 10 kg"}, 3:{sets:4,detail:"8 reps por pierna con 12 kg, bajada de 3 seg"}, 4:{sets:4,detail:"8 reps por pierna con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Sin peso, foco en el equilibrio",dosis:"10 reps por pierna"}, 2:{sets:3,variante:"Con 10 kg",dosis:"8–10 reps por pierna"}, 3:{sets:4,variante:"Con 12 kg",dosis:"8 reps por pierna, bajada de 3 seg"}, 4:{sets:4,variante:"Con 12 kg",dosis:"8 reps por pierna"}} },
     pushup:   { name:"Flexión de brazos progresiva", en:"Push-Up (progression)", patron:"Empuje horizontal", musculos:"Pectoral, tríceps, deltoide anterior", icon:"pushh", loaded:false, safety:"hombro",
       cues:["Manos algo más anchas que los hombros, cuerpo en línea recta","Baja solo hasta que el codo quede a la altura del torso — no más profundo","Escápulas activas: junta suave al bajar, separa al subir","Si el hombro derecho molesta, vuelve a la variante más inclinada"],
-      bw:{1:{sets:3,detail:"8–10 reps apoyado en una mesa (inclinado)"}, 2:{sets:3,detail:"8–10 reps apoyado en una silla o escalón"}, 3:{sets:4,detail:"6–8 reps en el suelo con rodillas apoyadas, bajada de 3 seg"}, 4:{sets:4,detail:"6–8 reps completas en el suelo (rodillas si el hombro molesta)"}} },
+      bw:{1:{sets:3,variante:"Apoyado en una mesa (inclinado)",dosis:"8–10 reps"}, 2:{sets:3,variante:"Apoyado en una silla o escalón",dosis:"8–10 reps"}, 3:{sets:4,variante:"En el suelo, con rodillas apoyadas",dosis:"6–8 reps, bajada de 3 seg"}, 4:{sets:4,variante:"Completas en el suelo (rodillas si el hombro molesta)",dosis:"6–8 reps"}} },
     row:      { name:"Remo a una mano con mancuerna", en:"Single-Arm Dumbbell Row", patron:"Tracción horizontal", musculos:"Dorsal, romboides, bíceps", icon:"pullh", loaded:false, safety:"hombro",
       cues:["Apoya la mano libre en una silla, espalda paralela al suelo y neutra","Lleva el codo hacia atrás pegado al torso, no hacia afuera","Aprieta la escápula al final del tirón, sin rotar el tronco","Controla la bajada, no dejes caer la mancuerna"],
-      bw:{1:{sets:3,detail:"12 reps por lado con 10 kg"}, 2:{sets:3,detail:"10 reps por lado con 12 kg"}, 3:{sets:4,detail:"8 reps por lado con 12 kg, pausa de 1 seg arriba"}, 4:{sets:4,detail:"8–10 reps por lado con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Espalda paralela al suelo",dosis:"12 reps por lado con 10 kg"}, 2:{sets:3,variante:"Espalda paralela al suelo",dosis:"10 reps por lado con 12 kg"}, 3:{sets:4,variante:"Espalda paralela al suelo",dosis:"8 reps por lado con 12 kg, pausa de 1 seg arriba"}, 4:{sets:4,variante:"Espalda paralela al suelo",dosis:"8–10 reps por lado con 12 kg"}} },
     plank:    { name:"Plancha (progresiva, opción bosu)", en:"Plank", patron:"Core (anti-extensión)", musculos:"Recto abdominal, transverso", icon:"core", loaded:false,
       cues:["Línea recta de hombro a rodilla (o a tobillo en la versión completa)","Glúteos y abdomen activos, cadera ni arriba ni caída","Reparte el peso en los antebrazos sin encoger los hombros hacia las orejas","Respira, no aguantes el aire"],
-      bw:{1:{sets:3,detail:"20–30 seg con rodillas apoyadas"}, 2:{sets:3,detail:"30–40 seg completa"}, 3:{sets:3,detail:"40–50 seg completa"}, 4:{sets:3,detail:"45–60 seg con antebrazos en el bosu (mantener)"}} },
+      bw:{1:{sets:3,variante:"Con rodillas apoyadas",dosis:"20–30 seg"}, 2:{sets:3,variante:"Completa (de puntillas)",dosis:"30–40 seg"}, 3:{sets:3,variante:"Completa (de puntillas)",dosis:"40–50 seg"}, 4:{sets:3,variante:"Con antebrazos en el bosu",dosis:"45–60 seg"}} },
 
     bulgarian:{ name:"Sentadilla búlgara", en:"Bulgarian Split Squat", patron:"Rodilla (unilateral)", musculos:"Cuádriceps, glúteo", icon:"squat", loaded:false,
       cues:["Empeine del pie de atrás sobre una silla, pie de adelante bien afirmado","Baja vertical, la rodilla de adelante sigue la línea del pie","Tronco levemente inclinado hacia adelante, espalda neutra","Si te cuesta el equilibrio, apoya una mano en la pared"],
-      bw:{1:{sets:3,detail:"8 reps por pierna solo con tu peso"}, 2:{sets:3,detail:"10 reps por pierna solo con tu peso"}, 3:{sets:4,detail:"8 reps por pierna sosteniendo 10 kg"}, 4:{sets:4,detail:"8 reps por pierna con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Solo con tu peso",dosis:"8 reps por pierna"}, 2:{sets:3,variante:"Solo con tu peso",dosis:"10 reps por pierna"}, 3:{sets:4,variante:"Sosteniendo 10 kg",dosis:"8 reps por pierna"}, 4:{sets:4,variante:"Sosteniendo 12 kg",dosis:"8 reps por pierna"}} },
     hipthrust:{ name:"Puente de glúteo a una pierna", en:"Single-Leg Glute Bridge", patron:"Extensión de cadera", musculos:"Glúteo, isquiotibiales", icon:"hipext", loaded:false,
       cues:["Sube empujando con el talón, apretando el glúteo arriba","Costillas abajo: la subida viene de la cadera, no de arquear la lumbar","La pierna libre se mantiene recogida y quieta","Baja controlado sin apoyar del todo entre repeticiones"],
-      bw:{1:{sets:3,detail:"12 reps por pierna con los hombros en el suelo"}, 2:{sets:3,detail:"12 reps por pierna con los hombros elevados en el sillón"}, 3:{sets:4,detail:"10 reps por pierna con la mancuerna de 10 kg en la cadera"}, 4:{sets:4,detail:"10 reps por pierna con 12 kg, pausa de 2 seg arriba"}} },
+      bw:{1:{sets:3,variante:"Hombros en el suelo",dosis:"12 reps por pierna"}, 2:{sets:3,variante:"Hombros elevados en el sillón",dosis:"12 reps por pierna"}, 3:{sets:4,variante:"Hombros elevados, con 10 kg en la cadera",dosis:"10 reps por pierna"}, 4:{sets:4,variante:"Hombros elevados, con 12 kg en la cadera",dosis:"10 reps por pierna, pausa de 2 seg arriba"}} },
     floorpress:{ name:"Press en el piso a una mano, agarre neutro", en:"Single-Arm Floor Press (neutral grip)", patron:"Empuje horizontal (rango limitado)", musculos:"Pectoral, deltoide anterior, tríceps", icon:"pushh", loaded:false, safety:"hombro",
       cues:["Acostado en el suelo: el piso frena el codo y evita que el hombro pase su rango seguro","Palma mirando hacia adentro (agarre neutro), codo a unos 45° del torso","Sube sin bloquear el codo de golpe","Este es el único empuje «de press» del plan: no lo cambies por uno por encima de la cabeza"],
-      bw:{1:{sets:3,detail:"12 reps por brazo con 5 kg"}, 2:{sets:3,detail:"10 reps por brazo con 10 kg"}, 3:{sets:4,detail:"8 reps por brazo con 12 kg, pausa de 1 seg abajo"}, 4:{sets:4,detail:"8–10 reps por brazo con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Agarre neutro, codo a 45°",dosis:"12 reps por brazo con 5 kg"}, 2:{sets:3,variante:"Agarre neutro, codo a 45°",dosis:"10 reps por brazo con 10 kg"}, 3:{sets:4,variante:"Agarre neutro, codo a 45°",dosis:"8 reps por brazo con 12 kg, pausa de 1 seg abajo"}, 4:{sets:4,variante:"Agarre neutro, codo a 45°",dosis:"8–10 reps por brazo con 12 kg"}} },
     facepull: { name:"Face pull + Y-T-W con banda", en:"Band Face Pull + YTW Raise", patron:"Tracción escapular", musculos:"Deltoide posterior, trapecio medio e inferior", icon:"pullh", loaded:false, safety:"hombro",
       cues:["Banda anclada a la altura del pecho: tira llevando los codos atrás y afuera, manos a la altura de la cara","En la Y-T-W los brazos no pasan por sobre la línea del hombro","Movimiento lento: acá interesa el control escapular, no el peso","Es el ejercicio que más cuida tu hombro — no lo saltes aunque falte tiempo"],
-      bw:{1:{sets:3,detail:"15 face pull + 8 Y-T-W"}, 2:{sets:3,detail:"15 face pull + 10 Y-T-W, banda más tensa"}, 3:{sets:3,detail:"12–15 face pull con pausa de 2 seg + 10 Y-T-W"}, 4:{sets:3,detail:"15 face pull + 10 Y-T-W (mantener)"}} },
+      bw:{1:{sets:3,variante:"Banda con tensión suave",dosis:"15 face pull + 8 Y-T-W"}, 2:{sets:3,variante:"Banda más tensa",dosis:"15 face pull + 10 Y-T-W"}, 3:{sets:3,variante:"Banda más tensa, con pausa de 2 seg en el face pull",dosis:"12–15 face pull + 10 Y-T-W"}, 4:{sets:3,variante:"Banda más tensa, con pausa de 2 seg en el face pull",dosis:"15 face pull + 10 Y-T-W"}} },
     pallof:   { name:"Press Pallof con banda", en:"Pallof Press", patron:"Core (anti-rotación)", musculos:"Oblicuos, transverso", icon:"core", loaded:false,
       cues:["Banda anclada al costado, a la altura del pecho","Estira los brazos al frente resistiendo el giro — el tronco no rota","Glúteos y abdomen activos, costillas abajo","Cambia de lado sin mover los pies de posición"],
-      bw:{1:{sets:3,detail:"10 reps por lado con 3 seg de sostén"}, 2:{sets:3,detail:"12 reps por lado con 3 seg de sostén"}, 3:{sets:3,detail:"12 reps por lado, banda más tensa, 5 seg de sostén"}, 4:{sets:3,detail:"12 reps por lado con 5 seg de sostén (mantener)"}} },
+      bw:{1:{sets:3,variante:"Banda con tensión suave",dosis:"10 reps por lado, 3 seg de sostén"}, 2:{sets:3,variante:"Banda con tensión suave",dosis:"12 reps por lado, 3 seg de sostén"}, 3:{sets:3,variante:"Banda más tensa",dosis:"12 reps por lado, 5 seg de sostén"}, 4:{sets:3,variante:"Banda más tensa",dosis:"12 reps por lado, 5 seg de sostén"}} },
 
     stepup:   { name:"Subida al step o bosu con mancuerna", en:"Dumbbell Step-Up", patron:"Rodilla (unilateral)", musculos:"Cuádriceps, glúteo", icon:"squat", loaded:false,
       cues:["Sube empujando con el talón de la pierna de arriba, sin impulsarte con la de abajo","Baja controlado — la bajada es la mitad que más cuesta","Altura del escalón: la que te deje subir sin inclinar el tronco","En el bosu, primero domina el step firme antes de pasar a la superficie inestable"],
-      bw:{1:{sets:3,detail:"10 reps por pierna solo con tu peso, escalón bajo"}, 2:{sets:3,detail:"10 reps por pierna con 10 kg"}, 3:{sets:4,detail:"8 reps por pierna con 12 kg, bajada de 3 seg"}, 4:{sets:4,detail:"10 reps por pierna con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Solo con tu peso, escalón bajo",dosis:"10 reps por pierna"}, 2:{sets:3,variante:"Con 10 kg, escalón bajo",dosis:"10 reps por pierna"}, 3:{sets:4,variante:"Con 12 kg",dosis:"8 reps por pierna, bajada de 3 seg"}, 4:{sets:4,variante:"Con 12 kg",dosis:"10 reps por pierna"}} },
     curl:     { name:"Curl de bíceps a un brazo con mancuerna", en:"Single-Arm Dumbbell Curl", patron:"Aislado — codo", musculos:"Bíceps", icon:"iso", loaded:true, safety:"aislamiento",
       cues:["Codo fijo junto al torso, no lo lleves hacia adelante","Sube sin balancear el tronco","Controla la bajada, sin estirar el codo de golpe al final"] },
     tricep:   { name:"Patada de tríceps con mancuerna", en:"Dumbbell Tricep Kickback", patron:"Aislado — codo", musculos:"Tríceps", icon:"iso", loaded:true, safety:"aislamiento",
@@ -651,14 +671,14 @@
       cues:["Antebrazo apoyado en el muslo, solo se mueve la muñeca","Sube y baja con control, sin usar el codo para impulsar","Haz la versión con la palma hacia arriba y luego hacia abajo"] },
     calf:     { name:"Elevación de talones a una pierna", en:"Single-Leg Calf Raise", patron:"Tobillo", musculos:"Gemelos", icon:"calf", loaded:false,
       cues:["Punta del pie en un escalón, talón libre para bajar bajo el nivel del escalón","Sube lo más alto que puedas y baja controlado","Apóyate con la mano en la pared solo para equilibrio, no para ayudarte a subir"],
-      bw:{1:{sets:3,detail:"15 reps por pierna solo con tu peso"}, 2:{sets:3,detail:"15 reps por pierna con 10 kg en la mano"}, 3:{sets:3,detail:"12 reps por pierna con 12 kg, pausa de 2 seg arriba"}, 4:{sets:3,detail:"15 reps por pierna con 12 kg (mantener)"}} },
+      bw:{1:{sets:3,variante:"Solo con tu peso",dosis:"15 reps por pierna"}, 2:{sets:3,variante:"Con 10 kg en la mano",dosis:"15 reps por pierna"}, 3:{sets:3,variante:"Con 12 kg en la mano",dosis:"12 reps por pierna, pausa de 2 seg arriba"}, 4:{sets:3,variante:"Con 12 kg en la mano",dosis:"15 reps por pierna"}} },
 
     potStand: { name:"Sit-to-stand con intención de velocidad", en:"Speed Sit-to-Stand", patron:"Potencia — rodilla/cadera", musculos:"Cuádriceps, glúteo", icon:"squat", loaded:false,
       cues:["Levántate de la silla lo más rápido que puedas manteniendo el control","Siéntate de vuelta lento y controlado (fase excéntrica)","Sin impulso de brazos — así el hombro no participa","Si la velocidad se cae, corta la serie: la potencia se entrena fresco"],
-      bw:{2:{sets:3,detail:"6–8 reps"}, 3:{sets:4,detail:"6–8 reps"}, 4:{sets:4,detail:"8 reps (mantener)"}} },
+      bw:{1:{sets:3,variante:"Aprendiendo el gesto, sin impulso de brazos",dosis:"5 reps veloces, 90 seg de pausa"}, 2:{sets:3,variante:"Sin impulso de brazos",dosis:"6–8 reps veloces, 90 seg de pausa"}, 3:{sets:4,variante:"Sin impulso de brazos",dosis:"6–8 reps veloces, 90 seg de pausa"}, 4:{sets:4,variante:"Sin impulso de brazos",dosis:"8 reps veloces, 90 seg de pausa"}} },
     potRope:  { name:"Saltos a la cuerda en series cortas", en:"Jump Rope Intervals", patron:"Potencia — elástica de tobillo", musculos:"Gemelos, cuádriceps, glúteo", icon:"calf", loaded:false, safety:"hombro",
       cues:["El giro de la cuerda viene de la muñeca, no del hombro — codos pegados al costado","Saltos bajos, aterriza con la punta del pie y rodilla blanda","Series cortas: se busca calidad de rebote, no aguantar hasta cansarte","Si el hombro derecho se resiente al girar la cuerda, cambia por sit-to-stand veloz"],
-      bw:{2:{sets:4,detail:"20 seg suaves + 40 seg de pausa"}, 3:{sets:5,detail:"25 seg + 35 seg de pausa"}, 4:{sets:5,detail:"30 seg + 30 seg de pausa (mantener)"}} }
+      bw:{1:{sets:3,variante:"Aprendiendo el giro de muñeca, sin cuerda (shadow)",dosis:"15 seg suaves + 45 seg de pausa"}, 2:{sets:4,variante:"Con cuerda",dosis:"20 seg suaves + 40 seg de pausa"}, 3:{sets:5,variante:"Con cuerda",dosis:"25 seg + 35 seg de pausa"}, 4:{sets:5,variante:"Con cuerda",dosis:"30 seg + 30 seg de pausa"}} }
   };
 
   function dayFull(){
@@ -706,7 +726,7 @@
      DATOS DEL ESTUDIANTE — esto es lo único que cambia entre planes:
      desde aquí hasta el marcador MOTOR más abajo (LADDER, SAFETY_MESSAGES,
      EXERCISES, dayFull(), BLOCKS, MOBILITY, CARDIO, HOME_DAY_WARNING,
-     STORAGE_NS inclusive). Ficha: v5, 5 sep 2026. Ver
+     STORAGE_NS inclusive). Ver
      docs/superpowers/specs/2026-09-02-plan-entrenamiento-plantilla-design.md §3–4.
      ================================================================ */
 
@@ -806,6 +826,16 @@
     for(var i=0;i<BLOCKS.length;i++){ if(w>=BLOCKS[i].weekStart && w<=BLOCKS[i].weekEnd) return BLOCKS[i]; }
     return BLOCKS[0];
   }
+  // Nivel que se muestra hoy para un ejercicio de bw{}. El marcado por el
+  // estudiante manda; sin marca, manda el bloque (blockId ya ES el nivel
+  // que el bloque propone, 1-4). Spec 2026-09-07 §4.
+  function nivelActual(exId, blockId){
+    var e = EXERCISES[exId];
+    if(!e || !e.bw) return null;
+    var guardado = parseInt(lsGet("nivel_"+exId), 10);
+    var n = (guardado>=1 && guardado<=4) ? guardado : blockId;
+    return e.bw[n] ? n : blockId;
+  }
   var FUERZA_WAVE = [90,93,96,99];
   function fuerzaTopForWeek(week){
     var block = blockForWeek(week);
@@ -869,7 +899,7 @@
 
   function ladderTableHTML(exId, ladderType){
     if(ladderType===null){
-      return '<p style="font-size:12.5px;color:var(--ink-2);">Progresa por variante y tempo, no por porcentaje de 1RM — la dosis exacta de este bloque aparece en la pestaña Hoy.</p>';
+      return '<p style="font-size:12.5px;color:var(--ink-2);">Progresa por variante y tempo, no por porcentaje de 1RM — la dosis exacta de tu nivel actual aparece en la pestaña Hoy.</p>';
     }
     var rows = ladderRungsFor(exId, ladderType, 100).map(function(r){
       return '<tr><td class="num">'+r.reps+' reps</td><td class="num">'+r.pct+'%</td><td class="num" data-rm-cell="'+exId+'" data-pct="'+r.pct+'" style="font-family:var(--font-mono);font-weight:650;color:var(--accent);">—</td></tr>';
@@ -888,6 +918,7 @@
           ladderChip+
         '</div>'+
         '<div style="margin-top:10px;">'+ ladderTableHTML(row.id, row.ladder) +'</div>'+
+        '<div style="margin-top:10px;"><a class="btnlink" href="'+ytLink(e)+'" target="_blank" rel="noopener">Ver video ↗</a></div>'+
       '</div>';
     }).join("");
     return '<div class="day-block"><div class="day-title"><h4>'+day.nombre+'</h4></div>'+items+'</div>';
@@ -910,7 +941,7 @@
 
   function renderMobility(){
     var rows = MOBILITY.map(function(r){
-      return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="num">'+r[2]+'</td><td>'+r[3]+'</td></tr>';
+      return '<tr><td>'+r[0]+'</td><td><a href="'+ytLink({name:r[1]})+'" target="_blank" rel="noopener">'+r[1]+' ↗</a></td><td class="num">'+r[2]+'</td><td>'+r[3]+'</td></tr>';
     }).join("");
     document.getElementById("mobilityTable").innerHTML = rows;
   }
@@ -922,11 +953,8 @@
     document.getElementById("cardioTable").innerHTML = rows;
   }
 
-  function ytLink(en){
-    return "https://www.youtube.com/results?search_query="+encodeURIComponent(en+" correct form tutorial");
-  }
-  function mwLink(){
-    return "https://musclewiki.com/es";
+  function ytLink(e){
+    return "https://www.youtube.com/results?search_query="+encodeURIComponent(e.name+" técnica correcta");
   }
 
   function renderLibrary(){
@@ -944,17 +972,16 @@
         '<ul class="exlib-cues">'+cues+'</ul>'+
         safety+
         '<div class="exlib-links">'+
-          '<a class="btnlink" href="'+mwLink()+'" target="_blank" rel="noopener">MuscleWiki: busca “'+e.en+'”</a>'+
-          '<a class="btnlink" href="'+ytLink(e.en)+'" target="_blank" rel="noopener">Ver video ↗</a>'+
+          '<a class="btnlink" href="'+ytLink(e)+'" target="_blank" rel="noopener">Ver video ↗</a>'+
         '</div>'+
       '</div>';
     }).join("");
     document.getElementById("exLibraryGrid").innerHTML = html;
   }
 
-  /* ================= RENDER: Mi 1RM tab ================= */
+  /* ================= RENDER: Mi progreso tab ================= */
   function renderRMList(){
-    var rows = Object.keys(EXERCISES).map(function(id){
+    var kgRows = Object.keys(EXERCISES).map(function(id){
       var e = EXERCISES[id];
       if(!e.loaded) return "";
       return '<div class="rm-row">'+
@@ -962,7 +989,19 @@
         '<div class="rm-r"><input class="rm-input" type="number" inputmode="decimal" min="0" step="0.5" id="rm-'+id+'" data-ex="'+id+'" placeholder="—"><span class="kgsuf">kg</span></div>'+
       '</div>';
     }).join("");
-    document.getElementById("rmList").innerHTML = rows;
+    var nivelRows = Object.keys(EXERCISES).map(function(id){
+      var e = EXERCISES[id];
+      if(!e.bw) return "";
+      var opts = [1,2,3,4].map(function(n){ return '<option value="'+n+'">Nivel '+n+'</option>'; }).join("");
+      return '<div class="rm-row">'+
+        '<div><div class="rm-name">'+e.name+'</div><div class="rm-pat">'+e.patron+'</div></div>'+
+        '<div class="rm-r"><select class="rm-input" style="width:auto;" id="rm-nivel-'+id+'" data-nivel-ex="'+id+'"><option value="">—</option>'+opts+'</select></div>'+
+      '</div>';
+    }).join("");
+    var html = "";
+    if(kgRows) html += '<div class="rm-group"><h4 class="rm-group-title">Lo que se mide en kilos</h4>'+kgRows+'</div>';
+    if(nivelRows) html += '<div class="rm-group"><h4 class="rm-group-title">Lo que sube por nivel</h4>'+nivelRows+'</div>';
+    document.getElementById("rmList").innerHTML = html;
   }
 
   function recalcAll(){
@@ -972,22 +1011,44 @@
       var pct = parseFloat(c.getAttribute("data-pct"));
       c.textContent = kgLabel(id, pct);
     });
+    Object.keys(EXERCISES).forEach(function(id){
+      var e = EXERCISES[id];
+      if(!e.bw) return;
+      var sel = document.getElementById("rm-nivel-"+id);
+      if(!sel) return;
+      var stored = lsGet("nivel_"+id);
+      sel.value = (stored===null ? "" : stored);
+    });
     renderToday();
   }
 
   function wireRMInputs(){
     Object.keys(EXERCISES).forEach(function(id){
       var e = EXERCISES[id];
-      if(!e.loaded) return;
-      var el = document.getElementById("rm-"+id);
-      if(!el) return;
-      var stored = lsGet("oneRM_"+id);
-      if(stored !== null) el.value = stored;
-      el.addEventListener("input", function(){
-        if(el.value === "") { lsRemove("oneRM_"+id); }
-        else { lsSet("oneRM_"+id, el.value); }
-        recalcAll();
-      });
+      if(e.loaded){
+        var el = document.getElementById("rm-"+id);
+        if(el){
+          var stored = lsGet("oneRM_"+id);
+          if(stored !== null) el.value = stored;
+          el.addEventListener("input", function(){
+            if(el.value === "") { lsRemove("oneRM_"+id); }
+            else { lsSet("oneRM_"+id, el.value); }
+            recalcAll();
+          });
+        }
+      }
+      if(e.bw){
+        var sel = document.getElementById("rm-nivel-"+id);
+        if(sel){
+          var storedNivel = lsGet("nivel_"+id);
+          if(storedNivel !== null) sel.value = storedNivel;
+          sel.addEventListener("change", function(){
+            if(sel.value === "") { lsRemove("nivel_"+id); }
+            else { lsSet("nivel_"+id, sel.value); }
+            recalcAll();
+          });
+        }
+      }
     });
   }
 
@@ -1043,7 +1104,15 @@
       html += '<div class="banner banner-deload"><b>Semana de deload</b>Reduce el volumen a la mitad esta semana (menos series, misma técnica). El cuerpo consolida lo acumulado antes de subir de nivel.</div>';
     }
     if(isRetest){
-      html += '<div class="banner banner-retest"><b>Semana de retest</b>Vuelve a estimar tu 1RM en los cuatro ejercicios de aislamiento del jueves y actualízalo en la pestaña «Mi 1RM» — sus pesos se recalculan solos. En el resto, revisa si ya puedes pasar a la variante siguiente.</div>';
+      var block = blockForWeek(week);
+      var atras = Object.keys(EXERCISES).filter(function(id){
+        var e = EXERCISES[id];
+        return e.bw && nivelActual(id, block.id) < block.id;
+      }).map(function(id){ return EXERCISES[id].name; });
+      var nivelMsg = atras.length
+        ? 'En el resto, el plan ya propone nivel '+block.id+' en '+atras.join(", ")+': si te sobran 2 repeticiones o más con buena técnica, sube.'
+        : 'En el resto, revisa si ya puedes pasar a la variante siguiente.';
+      html += '<div class="banner banner-retest"><b>Semana de retest</b>Vuelve a estimar tu 1RM en los cuatro ejercicios de aislamiento del jueves y actualízalo en la pestaña «Mi progreso» — sus pesos se recalculan solos. '+nivelMsg+'</div>';
     }
     document.getElementById("weekBanners").innerHTML = html;
   }
@@ -1060,19 +1129,31 @@
   function workoutCardHTML(row, blockId, programDay, weekTopPct){
     var e = EXERCISES[row.id];
     if(!e) return "";
-    var body;
+    var body, nivelControls = "";
     if(row.ladder===null){
-      var dose = (e.bw && e.bw[blockId]) ? e.bw[blockId] : {sets:3, detail:"progresión gradual"};
+      var nivel = nivelActual(row.id, blockId);
+      var dose = (e.bw && e.bw[nivel]) ? e.bw[nivel] : {sets:3, variante:"", dosis:"progresión gradual"};
       var bwRows = [];
       for(var si=0; si<dose.sets; si++){
         var bwKey = "chk_pd"+programDay+"_"+row.id+"_"+si;
         var bwChecked = lsGet(bwKey) === "1";
         bwRows.push('<label class="rung-row'+(bwChecked?" is-done":"")+'" data-chk-key="'+bwKey+'">'+
           '<input type="checkbox" class="rung-check"'+(bwChecked?" checked":"")+'>'+
-          '<span class="rung-reps">Serie '+(si+1)+' · '+dose.detail+'</span>'+
+          '<span class="rung-reps">Serie '+(si+1)+' · '+dose.dosis+'</span>'+
         '</label>');
       }
-      body = bwRows.join("") + '<p style="font-size:11.5px;color:var(--ink-3);margin-top:6px;">Progresa por variante y tempo, no por porcentaje de 1RM.</p>';
+      body = bwRows.join("");
+      if(e.bw){
+        var opts = [1,2,3,4].map(function(n){
+          return '<option value="'+n+'"'+(n===nivel?" selected":"")+'>Nivel '+n+'</option>';
+        }).join("");
+        nivelControls = '<select class="nivel-select" data-nivel-ex="'+row.id+'">'+opts+'</select>';
+        var nvRows = [1,2,3,4].map(function(n){
+          var lv = e.bw[n];
+          return '<div class="nv-row'+(n===nivel?" is-current":"")+'"><span class="nv-dot">'+(n===nivel?"●":n)+'</span><span>'+lv.variante+' · '+lv.dosis+'</span></div>';
+        }).join("");
+        body += '<details class="niveles"><summary></summary><div class="niveles-list">'+nvRows+'</div></details>';
+      }
     } else {
       var rm = getRM(row.id);
       var rungs = (row.ladder==="fuerza") ? ladderRungsFor(row.id, row.ladder, weekTopPct) : LADDER[row.ladder];
@@ -1089,10 +1170,12 @@
       ? '<div class="safety-flag">⚠ '+SAFETY_MESSAGES[e.safety].title+': '+SAFETY_MESSAGES[e.safety].text+'</div>'
       : "";
     var cues = e.cues.map(function(c){ return "<li>"+c+"</li>"; }).join("");
+    var videoBtn = '<a class="btnlink" href="'+ytLink(e)+'" target="_blank" rel="noopener">Ver video ↗</a>';
     return '<div class="card panel wk-card">'+
       '<div class="wk-head">'+ svgIcon(e.icon,"ex-icon") +
         '<div><div class="wk-name">'+e.name+'</div><div class="wk-sub">'+e.en+' · '+e.musculos+'</div></div>'+
       '</div>'+
+      '<div class="wk-controls">'+nivelControls+videoBtn+'</div>'+
       '<div style="margin-top:10px;">'+body+'</div>'+
       safety+
       '<details class="tech"><summary></summary><ul class="exlib-cues">'+cues+'</ul></details>'+
@@ -1121,7 +1204,7 @@
     } else if(session.type==="casa"){
       document.getElementById("seqTitle").textContent = "Hoy: movilidad y cardio (casa)";
       var mobRows = MOBILITY.filter(function(r){ return r[0]==="Todos" || r[0].indexOf(String(block.id))!==-1; })
-        .map(function(r){ return '<tr><td>'+r[1]+'</td><td class="num">'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
+        .map(function(r){ return '<tr><td><a href="'+ytLink({name:r[1]})+'" target="_blank" rel="noopener">'+r[1]+' ↗</a></td><td class="num">'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
       var cardioRow = CARDIO[block.id-1];
       mount.innerHTML =
         '<div class="wk-card"><div class="section-kicker" style="margin-top:14px;">Movilidad y flexibilidad</div>'+
@@ -1147,6 +1230,7 @@
 
     recalcRungLabels();
     wireRungChecks();
+    wireNivelSelects();
     wireGotoRM();
   }
 
@@ -1166,6 +1250,16 @@
         var key = row.getAttribute("data-chk-key");
         if(checkbox.checked){ lsSet(key,"1"); row.classList.add("is-done"); }
         else { lsRemove(key); row.classList.remove("is-done"); }
+      });
+    });
+  }
+
+  function wireNivelSelects(){
+    Array.prototype.forEach.call(document.querySelectorAll("#todayMount [data-nivel-ex]"), function(sel){
+      sel.addEventListener("change", function(){
+        var exId = sel.getAttribute("data-nivel-ex");
+        lsSet("nivel_"+exId, sel.value);
+        recalcAll();
       });
     });
   }
