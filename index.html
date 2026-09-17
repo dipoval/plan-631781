@@ -650,13 +650,13 @@
     stepup:   { name:"Subida al step o bosu con mancuerna", en:"Dumbbell Step-Up", patron:"Rodilla (unilateral)", musculos:"Cuádriceps, glúteo", icon:"squat", loaded:false,
       cues:["Sube empujando con el talón de la pierna de arriba, sin impulsarte con la de abajo","Baja controlado — la bajada es la mitad que más cuesta","Altura del escalón: la que te deje subir sin inclinar el tronco","En el bosu, primero domina el step firme antes de pasar a la superficie inestable"],
       bw:{1:{sets:3,variante:"Solo con tu peso, escalón bajo",dosis:"10 reps por pierna"}, 2:{sets:3,variante:"Con 10 kg, escalón bajo",dosis:"10 reps por pierna"}, 3:{sets:4,variante:"Con 12 kg",dosis:"8 reps por pierna, bajada de 3 seg"}, 4:{sets:4,variante:"Con 12 kg",dosis:"10 reps por pierna"}} },
-    curl:     { name:"Curl de bíceps a un brazo con mancuerna", en:"Single-Arm Dumbbell Curl", patron:"Aislado — codo", musculos:"Bíceps", icon:"curl", loaded:true, incrementoKg:2.5, safety:"aislamiento",
+    curl:     { name:"Curl de bíceps a un brazo con mancuerna", en:"Single-Arm Dumbbell Curl", patron:"Aislado — codo", musculos:"Bíceps", icon:"curl", loaded:true, incrementoKg:5, safety:"aislamiento",
       cues:["Codo fijo junto al torso, no lo lleves hacia adelante","Sube sin balancear el tronco","Controla la bajada, sin estirar el codo de golpe al final"] },
-    tricep:   { name:"Patada de tríceps con mancuerna", en:"Dumbbell Tricep Kickback", patron:"Aislado — codo", musculos:"Tríceps", icon:"tricep", loaded:true, incrementoKg:2.5, safety:"aislamiento",
+    tricep:   { name:"Patada de tríceps con mancuerna", en:"Dumbbell Tricep Kickback", patron:"Aislado — codo", musculos:"Tríceps", icon:"tricep", loaded:true, incrementoKg:5, safety:"aislamiento",
       cues:["Tronco inclinado con la mano libre apoyada, brazo pegado al costado","Solo se mueve el antebrazo: el codo se queda quieto y atrás","Elegido en vez de la extensión sobre la cabeza, que exige llevar el hombro a flexión completa"] },
-    shrug:    { name:"Encogimiento de hombros a un lado", en:"Single-Arm Dumbbell Shrug", patron:"Elevación escapular", musculos:"Trapecio superior", icon:"shrug", loaded:true, incrementoKg:2.5, safety:"hombro",
+    shrug:    { name:"Encogimiento de hombros a un lado", en:"Single-Arm Dumbbell Shrug", patron:"Elevación escapular", musculos:"Trapecio superior", icon:"shrug", loaded:true, incrementoKg:5, safety:"hombro",
       cues:["Sube el hombro derecho hacia la oreja, sin rodarlo hacia adelante o atrás","Controla la bajada, no sueltes el peso de golpe","Carga liviana a propósito: es un rango corto y en un hombro operado se compensa fácil con el cuello, así que no pasa del 80% de tu máximo aunque marcaste trapecio en fuerza","Si reproduce el dolor escapular, sáltalo y avísale al relator"] },
-    wristcurl:{ name:"Curl de muñeca con mancuerna", en:"Dumbbell Wrist Curl", patron:"Aislado — muñeca", musculos:"Flexores y extensores del antebrazo", icon:"wrist", loaded:true, incrementoKg:2.5, safety:"aislamiento",
+    wristcurl:{ name:"Curl de muñeca con mancuerna", en:"Dumbbell Wrist Curl", patron:"Aislado — muñeca", musculos:"Flexores y extensores del antebrazo", icon:"wrist", loaded:true, incrementoKg:5, safety:"aislamiento",
       cues:["Antebrazo apoyado en el muslo, solo se mueve la muñeca","Sube y baja con control, sin usar el codo para impulsar","Haz la versión con la palma hacia arriba y luego hacia abajo"] },
     calf:     { name:"Elevación de talones a una pierna", en:"Single-Leg Calf Raise", patron:"Tobillo", musculos:"Gemelos", icon:"calf", loaded:false,
       cues:["Punta del pie en un escalón, talón libre para bajar bajo el nivel del escalón","Sube lo más alto que puedas y baja controlado","Apóyate con la mano en la pared solo para equilibrio, no para ayudarte a subir"],
@@ -940,6 +940,11 @@
       var exCap = (EXERCISES[exId] && EXERCISES[exId].capFuerza) || 100;
       var topThis = Math.min(fuerzaTopForWeek(week), exCap);
       var topPrev = Math.min(fuerzaTopForWeek(week-1), exCap);
+      // El aviso solo tiene sentido cuando el % nominal realmente sube: si el cap
+      // de seguridad deja ambas semanas en el mismo tope, o la onda retrocede al
+      // reiniciar dentro del bloque (semana 5/17, 99%→90%), no hay "% sube pero
+      // el kg no cambia" que explicar — sería un aviso con causa equivocada.
+      if(topThis <= topPrev) return false;
       var kgThis = OneRM.kgLabel(exId, topThis, rmOverride);
       var kgPrev = OneRM.kgLabel(exId, topPrev, rmOverride);
       return kgThis!=="—" && kgThis===kgPrev;
@@ -1238,9 +1243,11 @@
       var storageKey = "chk_pd"+programDay+"_"+exId+"_"+first+(last!==first ? ("-"+last) : "");
       var checked = Storage.lsGet(storageKey) === "1";
       var serieLabel = (idxs.length===1) ? ("Serie "+(first+1)) : ("Series "+(first+1)+"-"+(last+1));
-      var repsLo = group.rungs[0].reps, repsHi = group.rungs[group.rungs.length-1].reps;
-      var repsMin = Math.min(repsLo, repsHi), repsMax = Math.max(repsLo, repsHi);
-      var repsLabel = (repsMin===repsMax) ? (repsMin+" reps") : (repsMin+"-"+repsMax+" reps");
+      // Reps por serie, no un rango: un rango ("6-12 reps") se lee como "haz entre
+      // 6 y 12 repeticiones", perdiendo la rampa descendente real de la
+      // hipertrofia/tensión moderada (ej. 12/10/8/6). El peso fusiona porque es
+      // el mismo kg real; las reps de cada serie siguen siendo la prescripción.
+      var repsLabel = group.rungs.map(function(r){ return r.reps; }).join("/") + " reps";
       var pctLo = group.rungs[0].pct, pctHi = group.rungs[group.rungs.length-1].pct;
       var pctLabel = (pctLo===pctHi) ? (pctLo+"% 1RM") : (pctLo+"-"+pctHi+"% 1RM");
       return '<label class="rung-row'+(checked?" is-done":"")+'" data-chk-key="'+storageKey+'">'+
